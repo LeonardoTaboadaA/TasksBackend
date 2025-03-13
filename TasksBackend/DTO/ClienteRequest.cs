@@ -1,25 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using TasksBackend.Utilidades;
 
-namespace TasksBackend.Entidades
+namespace TasksBackend.DTO
 {
-    public class Cliente
+    public class ClienteRequest
     {
-        [Key]
-        public int Id { get; set; }
 
         [Required(ErrorMessage = "El RUC es obligatorio.")]
-        [StringLength(11, MinimumLength = 11, ErrorMessage = "El RUC debe tener 11 dígitos.")]
+        [StringLength(11, MinimumLength = 11, ErrorMessage = "El RUC debe tener 11 dígitos")]
         public string Ruc { get; set; }
 
         [Required(ErrorMessage = "La razón social es obligatoria.")]
         [StringLength(255, ErrorMessage = "La razón social no debe superar los 255 caracteres.")]
+        [MinLength(3, ErrorMessage = "La razón social debe tener al menos 3 caracteres.")]
         public string RazonSocial { get; set; }
 
         [Required(ErrorMessage = "El número de celular es obligatorio.")]
         [RegularExpression(@"^9[0-9]{8}$", ErrorMessage = "El número de celular no es válido. Debe comenzar con 9 y tener 9 dígitos.")]
-        [StringLength(9, MinimumLength = 9, ErrorMessage = "El número de celular debe tener 9 dígitos.")]
         public string NumeroCelular { get; set; }
 
         [Required(ErrorMessage = "El email es obligatorio.")]
@@ -37,10 +36,7 @@ namespace TasksBackend.Entidades
         [StringLength(255, ErrorMessage = "La ubicación no debe superar los 255 caracteres.")]
         public string Ubicacion { get; set; }
 
-        public bool Estado { get; set; } = true;
-
-        public DateTime FechaRegistro { get; set; } = DateTime.Now;
-
-        public List<ClientesEquipos> ClienteEquipo { get; set; }
+        [ModelBinder(BinderType = typeof(TypeBinder<List<int>>))]
+        public List<int> EquiposIds { get; set; }
     }
 }

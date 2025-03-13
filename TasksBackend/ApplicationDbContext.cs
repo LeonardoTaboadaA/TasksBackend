@@ -10,12 +10,18 @@ namespace TasksBackend
         {
         }
 
-        public DbSet<Cotizacion> Cotizaciones { get;set; }
-        public DbSet<Cliente> Clientes { get;set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            //Llaves primarias compuestas de la tabla intermedia ClienteEquipo
+            modelBuilder.Entity<ClientesEquipos>().HasKey(x => new { x.ClienteId, x.EquipoId });
+
             base.OnModelCreating(modelBuilder);
         }
+
+        public DbSet<Cliente> Clientes { get;set; }
+        public DbSet<Equipo> Equipos { get;set; }
+        public DbSet<ClientesEquipos> ClientesEquipos { get;set; }
+
+        
     }
 }

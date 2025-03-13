@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using TasksBackend.Entidades;
+using TasksBackend.Utilidades;
 
 namespace TasksBackend
 {
@@ -32,6 +33,7 @@ namespace TasksBackend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(Startup));
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("defaultConnection")));
 
             services.AddCors(options =>
@@ -39,13 +41,15 @@ namespace TasksBackend
                 var baseUrlFrontend = Configuration.GetValue<string>("base_url_frontend");
                 options.AddDefaultPolicy(builder =>
                 {
-                    builder.WithOrigins(baseUrlFrontend).AllowAnyMethod().AllowAnyHeader();
+                    builder.WithOrigins(baseUrlFrontend).AllowAnyMethod().AllowAnyHeader()
+                    .WithExposedHeaders(new string[] {"cantidadTotalRegistros"});
                 });
             });
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddErrorDescriber<IdentityErrorDescriberSpanish>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(opciones =>

@@ -10,8 +10,8 @@ using TasksBackend;
 namespace TasksBackend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250124175821_SistemaUsuariosV1.1")]
-    partial class SistemaUsuariosV11
+    [Migration("20250221224440_DBTASKS_V1")]
+    partial class DBTASKS_V1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -241,6 +241,152 @@ namespace TasksBackend.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("TasksBackend.Entidades.Cliente", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Centro")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Codigo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombre")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NumeroCelular")
+                        .IsRequired()
+                        .HasMaxLength(9)
+                        .HasColumnType("nvarchar(9)");
+
+                    b.Property<string>("RazonSocial")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Ruc")
+                        .IsRequired()
+                        .HasMaxLength(11)
+                        .HasColumnType("nvarchar(11)");
+
+                    b.Property<string>("Ubicacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clientes");
+                });
+
+            modelBuilder.Entity("TasksBackend.Entidades.ClientesEquipos", b =>
+                {
+                    b.Property<int>("ClienteId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("EquipoId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClienteId", "EquipoId");
+
+                    b.HasIndex("EquipoId");
+
+                    b.ToTable("ClientesEquipos");
+                });
+
+            modelBuilder.Entity("TasksBackend.Entidades.Equipo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Amperaje")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("AnioFabricacion")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AnioInstalacion")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("CapacidadCarga")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<decimal?>("CargaTermica")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<bool?>("ConexionMonitoreo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("Especialidad")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Estado")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Marca")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Modelo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<decimal>("Potencia")
+                        .HasColumnType("decimal(10,2)");
+
+                    b.Property<int>("Tension")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TipoGasRefrigerante")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Ubicacion")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Equipos");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -290,6 +436,35 @@ namespace TasksBackend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("TasksBackend.Entidades.ClientesEquipos", b =>
+                {
+                    b.HasOne("TasksBackend.Entidades.Cliente", "Cliente")
+                        .WithMany("ClienteEquipo")
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TasksBackend.Entidades.Equipo", "Equipo")
+                        .WithMany("ClienteEquipo")
+                        .HasForeignKey("EquipoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Equipo");
+                });
+
+            modelBuilder.Entity("TasksBackend.Entidades.Cliente", b =>
+                {
+                    b.Navigation("ClienteEquipo");
+                });
+
+            modelBuilder.Entity("TasksBackend.Entidades.Equipo", b =>
+                {
+                    b.Navigation("ClienteEquipo");
                 });
 #pragma warning restore 612, 618
         }

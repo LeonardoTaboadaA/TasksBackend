@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TasksBackend.Migrations
 {
-    public partial class SistemaUsuarios : Migration
+    public partial class DBTASKS_V1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,14 @@ namespace TasksBackend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Dni = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApellidoPaterno = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ApellidoMaterno = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Cargo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaCreacion = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Enabled = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -44,6 +52,59 @@ namespace TasksBackend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clientes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ruc = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
+                    RazonSocial = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    NumeroCelular = table.Column<string>(type: "nvarchar(9)", maxLength: 9, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Centro = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Ubicacion = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Codigo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Estado = table.Column<bool>(type: "bit", nullable: false),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clientes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Equipos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Marca = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Tension = table.Column<int>(type: "int", nullable: false),
+                    AnioFabricacion = table.Column<int>(type: "int", nullable: false),
+                    Modelo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Potencia = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Amperaje = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    Especialidad = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    Ubicacion = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Descripcion = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    Cantidad = table.Column<int>(type: "int", nullable: true),
+                    CargaTermica = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
+                    TipoGasRefrigerante = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CapacidadCarga = table.Column<decimal>(type: "decimal(10,2)", nullable: true),
+                    AnioInstalacion = table.Column<int>(type: "int", nullable: true),
+                    ConexionMonitoreo = table.Column<bool>(type: "bit", nullable: true),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Equipos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,6 +213,30 @@ namespace TasksBackend.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ClientesEquipos",
+                columns: table => new
+                {
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    EquipoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClientesEquipos", x => new { x.ClienteId, x.EquipoId });
+                    table.ForeignKey(
+                        name: "FK_ClientesEquipos_Clientes_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Clientes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ClientesEquipos_Equipos_EquipoId",
+                        column: x => x.EquipoId,
+                        principalTable: "Equipos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -190,6 +275,11 @@ namespace TasksBackend.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClientesEquipos_EquipoId",
+                table: "ClientesEquipos",
+                column: "EquipoId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -210,10 +300,19 @@ namespace TasksBackend.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "ClientesEquipos");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Clientes");
+
+            migrationBuilder.DropTable(
+                name: "Equipos");
         }
     }
 }

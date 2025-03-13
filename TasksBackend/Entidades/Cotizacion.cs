@@ -6,7 +6,7 @@ namespace TasksBackend.Entidades
     public class Cotizacion
     {
         [Key]
-        public int IdCotizacion { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "El ID del cliente es obligatorio.")]
         public int IdCliente { get; set; }

@@ -2,7 +2,7 @@
 
 namespace TasksBackend.DTO
 {
-    public class UsuarioRequest
+    public class UsuarioRequestEditar
     {
         [Required]
         public string Dni { get; set; }
@@ -22,7 +22,6 @@ namespace TasksBackend.DTO
         public string Cargo { get; set; }
         [Required]
         public string UserName { get; set; }
-        [Required]
         public string Password { get; set; }
         [Required]
         public string Rol { get; set; }
